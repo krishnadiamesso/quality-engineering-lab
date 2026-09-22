@@ -17,7 +17,7 @@ const invalidUsers = [
   },
 ];
 
-test.describe("POST /api/users", () => {
+test.describe("Users API", () => {
   test("creates a user", async ({ request }) => {
     const response = await request.post("/api/users", {
       data: {
@@ -27,11 +27,12 @@ test.describe("POST /api/users", () => {
     });
     const body = await response.json();
     expect(response.status()).toBe(201);
-    expect(body).toEqual({
-      id: 1,
+    expect(body).toMatchObject({
       name: "Bruce Wayne",
       email: "bruce.wayne@wayneenterprises.com",
     });
+
+    expect(body.id).toEqual(expect.any(Number));
   });
 
   for (const testCase of invalidUsers) {
@@ -45,4 +46,32 @@ test.describe("POST /api/users", () => {
       expect(body.error).toBe(testCase.expectedError);
     });
   }
+
+  test("created user can be retrieved by id", async ({ request }) => {
+    const createResponse = await request.post("/api/users", {
+      data: {
+        name: "Clark Kent",
+        email: "clark.kent@dailyplanet.com",
+      },
+    });
+
+    expect(createResponse.status()).toBe(201);
+
+    const createdUser = await createResponse.json();
+
+    const getResponse = await request.get(`/api/users/${createdUser.id}`);
+    expect(getResponse.status()).toBe(200);
+
+    const fetchedUser = await getResponse.json();
+
+    expect(fetchedUser).toEqual(createdUser);
+  });
+
+  test("returns 404 when user does not exist", async ({ request }) => {
+    const response = await request.get("/api/users/999");
+    expect(response.status()).toBe(404);
+
+    const body = await response.json();
+    expect(body.error).toBe("User not found");
+  });
 });
