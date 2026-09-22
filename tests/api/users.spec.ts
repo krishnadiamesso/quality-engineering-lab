@@ -18,6 +18,13 @@ const invalidUsers = [
 ];
 
 test.describe("Users API", () => {
+  test.describe.configure({ mode: "serial" });
+
+  test.beforeEach(async ({ request }) => {
+    const response = await request.delete("/api/test/reset");
+    expect(response.status()).toBe(204);
+  });
+
   test("creates a user", async ({ request }) => {
     const response = await request.post("/api/users", {
       data: {

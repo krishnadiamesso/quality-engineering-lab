@@ -55,6 +55,12 @@ app.post("/api/users", (req, res) => {
   res.status(201).json(user);
 });
 
+app.delete("/api/test/reset", (_req, res) => {
+  users.length = 0;
+  nextUserId = 1;
+  res.status(204).send();
+});
+
 const PORT = 3000;
 
 app.listen(PORT, () => {
