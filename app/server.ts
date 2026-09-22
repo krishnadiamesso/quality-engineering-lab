@@ -1,50 +1,62 @@
-import express from 'express';
+import express from "express";
 
 const app = express();
 app.use(express.json());
 
 type User = {
-    id: number;
-    name: string;
-    email: string;
-}
+  id: number;
+  name: string;
+  email: string;
+};
 
 const users: User[] = [];
 
 let nextUserId = 1;
 
-app.get('/health', (_req, res) => {
-    res.json({status: 'ok'});
-})
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok" });
+});
 
-app.post('/api/users', (req, res) => {
-    const {name, email} = req.body;
-    if (!email) {
-        res.status(400).json({error: 'Email is required'});
-        return;
-    }
+app.get("/api/users/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const user = users.find((user) => user.id === id);
 
-    if (!name) {
-        res.status(400).json({error: 'Name is required'});
-        return;
-    }
+  if (!user) {
+    res.status(404).json({ error: "User not found" });
+    return;
+  }
 
-    const user: User = {
-        id: nextUserId,
-        name,
-        email
-    }
+  res.json(user);
+});
 
-    console.log('User created', user);
+app.post("/api/users", (req, res) => {
+  const { name, email } = req.body;
+  if (!email) {
+    res.status(400).json({ error: "Email is required" });
+    return;
+  }
 
-    users.push(user);
-    nextUserId++;
+  if (!name) {
+    res.status(400).json({ error: "Name is required" });
+    return;
+  }
 
-    res.status(201).json(user);
-})
+  const user: User = {
+    id: nextUserId,
+    name,
+    email,
+  };
+
+  console.log("User created", user);
+
+  users.push(user);
+  nextUserId++;
+
+  res.status(201).json(user);
+});
 
 const PORT = 3000;
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`)
-})
+  console.log(`Server is running on port ${PORT}`);
+});
