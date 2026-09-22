@@ -79,7 +79,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run app',
+    command: 'npm start',
     url: 'http://127.0.0.1:3000/health',
     reuseExistingServer: !process.env.CI,
   },

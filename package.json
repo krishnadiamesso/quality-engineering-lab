@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "app": "tsx app/server.ts",
+    "start": "tsx app/server.ts",
     "test": "playwright test"
   },
   "keywords": [],
