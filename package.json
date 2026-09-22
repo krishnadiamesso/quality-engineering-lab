@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "start": "tsx app/server.ts",
-    "test": "playwright test"
+    "test": "playwright test",
+    "dev": "tsx watch app/server.ts"
   },
   "keywords": [],
   "author": "",
