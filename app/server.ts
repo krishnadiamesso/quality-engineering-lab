@@ -7,8 +7,9 @@ app.get('/health', (_req, res) => {
     res.json({ status: 'ok' });
 })
 
-app.post('/api/users', (req,_res) => {
-    console.log(req.body);
+app.post('/api/users', (req,res) => {
+    const {name, email} = req.body;
+    res.status(201).json({id:1, name, email});
 })
 
 const PORT = 3000;
