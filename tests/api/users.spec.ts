@@ -14,7 +14,7 @@ const invalidUsers = [
         },
         expectedError: 'Name is required'
     }
-]
+];
 
 test.describe('POST /api/users', () => {
 
