@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { createUser } from "../helpers/users";
 
 test("displays the login form", async ({ page }) => {
   // navigate
@@ -13,10 +14,23 @@ test("displays the login form", async ({ page }) => {
   await expect(signInButton).toBeVisible();
 });
 
-test("user can submit the login form", async ({ page }) => {
+test("user can submit the login form", async ({ page, request }) => {
+  const user = await createUser(request, {
+    email: "barry.allen@flash.com",
+    name: "Barry Allen",
+  });
+
   await page.goto("/login.html");
-  await page.getByLabel("Email").fill("bruce@wayne.com");
+  await page.getByLabel("Email").fill(user.email);
   await page.getByRole("button", { name: "Sign in" }).click();
 
-  await expect(page.getByText("Signed in as bruce@wayne.com")).toBeVisible();
+  await expect(page.getByText(`Signed in as ${user.email}`)).toBeVisible();
+});
+
+test("shows an error for an unknown user", async ({ page }) => {
+  await page.goto("/login.html");
+  await page.getByLabel("Email").fill("unknown@user.com");
+  await page.getByRole("button", { name: "Sign in" }).click();
+
+  await expect(page.getByText("Error: Invalid credentials")).toBeVisible();
 });
