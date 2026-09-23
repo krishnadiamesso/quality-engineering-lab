@@ -56,6 +56,21 @@ app.post("/api/users", (req, res) => {
   res.status(201).json(user);
 });
 
+app.post("/api/login", (req, res) => {
+  const { email } = req.body;
+
+  const user = users.find((user) => user.email === email);
+
+  if (!user) {
+    res.status(401).json({
+      error: "Invalid credentials",
+    });
+    return;
+  }
+
+  res.json(user);
+});
+
 app.delete("/api/test/reset", (_req, res) => {
   users.length = 0;
   nextUserId = 1;
