@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { createUser } from "../helpers/users";
 
 const invalidUsers = [
   {
@@ -55,16 +56,10 @@ test.describe("Users API", () => {
   }
 
   test("created user can be retrieved by id", async ({ request }) => {
-    const createResponse = await request.post("/api/users", {
-      data: {
-        name: "Clark Kent",
-        email: "clark.kent@dailyplanet.com",
-      },
+    const createdUser = await createUser(request, {
+      name: "Clark Kent",
+      email: "clark.kent@dailyplanet.com",
     });
-
-    expect(createResponse.status()).toBe(201);
-
-    const createdUser = await createResponse.json();
 
     const getResponse = await request.get(`/api/users/${createdUser.id}`);
     expect(getResponse.status()).toBe(200);
